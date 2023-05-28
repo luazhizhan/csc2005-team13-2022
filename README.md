@@ -1,6 +1,21 @@
 # csc2005-team13-2022
 
-This project is generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.6.
+A web application that enables Tan Tock Seng Hospital to schedule and manage its medical equipment efficiently. The app will allow the hospital staff to manage equipment, check equipment availability, and manage patient's appointments.
+
+## System Architecture
+
+![image](https://github.com/luazhizhan/csc2005-team13-2022/assets/16435270/0b8d9854-fe1d-48ef-8e05-d12026f7f35e)
+
+## Libraries
+
+1. [Tailwind CSS](https://tailwindcss.com/docs/guides/angular) - Utility CSS library for front-end development
+
+2. [AngularFire](https://github.com/angular/angularfire) - Firebase library for Angular application
+
+3. [Angular Calendar](https://github.com/mattlewis92/angular-calendar) - Angular calendar library
+
+4. [Font Awesome](https://fontawesome.com/) - Icon library
+
 
 ## Demo
 
