@@ -1,0 +1,215 @@
+<form
+  [formGroup]="formGroup"
+  class="flex flex-col gap-3"
+  (ngSubmit)="onSubmit()">
+  <h2 class="text-base font-medium">{{ title }}</h2>
+
+  <div *ngIf="type === 'scope'">
+    <label for="type" class="mb-2 block text-sm font-medium">Type*</label>
+    <select
+      id="type"
+      formControlName="type"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option value="REGULAR">REGULAR</option>
+      <option value="LOAN">LOAN</option>
+      <option value="REPAIR">REPAIR</option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['type'].hasError('required') &&
+        formGroup.controls['type'].dirty
+      "
+      class="text-red-600">
+      Type is required
+    </p>
+  </div>
+
+  <div *ngIf="type === 'scope'">
+    <app-endoscope-label></app-endoscope-label>
+    <select
+      id="serialNo"
+      formControlName="serialNo"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option *ngFor="let e of endoscopes" [value]="e.serialNo">
+        {{ e.label }}
+      </option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['serialNo'].hasError('required') &&
+        formGroup.controls['serialNo'].dirty
+      "
+      class="text-red-600">
+      Endoscope is required
+    </p>
+  </div>
+
+  <div *ngIf="type === 'washer'">
+    <label for="serialNo" class="mb-2 block text-sm font-medium">
+      Select washer*
+    </label>
+    <select
+      id="serialNo"
+      formControlName="serialNo"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option *ngFor="let e of washers" [value]="e.serialNo">
+        {{ e.label }}
+      </option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['serialNo'].hasError('required') &&
+        formGroup.controls['serialNo'].dirty
+      "
+      class="text-red-600">
+      Washer is required
+    </p>
+  </div>
+
+  <div>
+    <label for="sendDate" class="mb-2 block text-sm font-medium">
+      Send on*
+    </label>
+    <input
+      id="sendDate"
+      type="date"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+      formControlName="sendDate" />
+    <p
+      *ngIf="
+        formGroup.controls['sendDate'].hasError('required') &&
+        formGroup.controls['sendDate'].dirty
+      "
+      class="text-red-600">
+      Send on date at is required
+    </p>
+  </div>
+
+  <div>
+    <label for="expectedResultDate" class="mb-2 block text-sm font-medium">
+      Expect result on*
+    </label>
+    <input
+      id="expectedResultDate"
+      type="date"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+      formControlName="expectedResultDate" />
+    <p
+      *ngIf="
+        formGroup.controls['expectedResultDate'].hasError('required') &&
+        formGroup.controls['expectedResultDate'].dirty
+      "
+      class="text-red-600">
+      Expected result on date at is required
+    </p>
+  </div>
+
+  <div>
+    <label for="disinfection" class="mb-2 block text-sm font-medium">
+      Disinfection*
+    </label>
+    <select
+      id="disinfection"
+      formControlName="disinfection"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option value="RAPICIDE PA PART A & B">RAPICIDE PA PART A & B</option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['disinfection'].hasError('required') &&
+        formGroup.controls['disinfection'].dirty
+      "
+      class="text-red-600">
+      Disinfection is required
+    </p>
+  </div>
+
+  <div>
+    <label for="disinfectantNo" class="mb-2 block text-sm font-medium">
+      Disinfectant No*
+    </label>
+    <select
+      id="disinfectantNo"
+      formControlName="disinfectantNo"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option value="A-506538, B-506539">A-506538, B-506539</option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['disinfection'].hasError('required') &&
+        formGroup.controls['disinfection'].dirty
+      "
+      class="text-red-600">
+      Disinfection No is required
+    </p>
+  </div>
+
+  <div>
+    <label for="detergent" class="mb-2 block text-sm font-medium">
+      Detergent*
+    </label>
+    <select
+      id="detergent"
+      formControlName="detergent"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option value="INTERCEPT PLUS">INTERCEPT PLUS</option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['detergent'].hasError('required') &&
+        formGroup.controls['detergent'].dirty
+      "
+      class="text-red-600">
+      Detergent is required
+    </p>
+  </div>
+
+  <div>
+    <label for="detergentLotNo" class="mb-2 block text-sm font-medium">
+      Detergent lot no*
+    </label>
+    <select
+      id="detergentLotNo"
+      formControlName="detergentLotNo"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option value="100000030">100000030</option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls['detergentLotNo'].hasError('required') &&
+        formGroup.controls['detergentLotNo'].dirty
+      "
+      class="text-red-600">
+      Detergent lot no is required
+    </p>
+  </div>
+
+  <p *ngIf="formError" class="inline-flex gap-1 text-red-600">
+    <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+    {{ formError }}
+  </p>
+  <p *ngIf="formSuccess" class="inline-flex gap-1">
+    <check-circle-solid-icon></check-circle-solid-icon>
+    {{ formSuccess }}
+  </p>
+  <button
+    #submit
+    [disabled]="
+      (formGroup.invalid && formGroup.dirty) || submitText !== 'Create'
+    "
+    type="submit"
+    class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+    {{ submitText }}
+  </button>
+</form>
+
+<!-- confirmation modal -->
+<app-modal
+  [hideModal]="hideModal"
+  [message]="modalMessage"
+  [type]="modalType"
+  [title]="modalTitle"
+  [confirmText]="modalConfirmText"
+  (confirm)="onSubmitConfirm()"
+  (cancel)="onSubmitCancel()">
+</app-modal>

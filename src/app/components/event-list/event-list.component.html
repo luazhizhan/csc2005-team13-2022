@@ -1,0 +1,112 @@
+<span *ngIf="events.length === 0" class="block py-2 text-center">
+  No events for today
+</span>
+<ul class="divide-y divide-gray-200">
+  <li class="px-5 py-3 hover:bg-gray-100 sm:py-4" *ngFor="let e of events">
+    <div [ngSwitch]="e.type">
+      <div
+        *ngSwitchCase="'appointment'"
+        class="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
+        <div class="flex items-center gap-4 pl-1">
+          <div class="rounded-full bg-cyan-700 py-1 px-2 text-white">
+            <fa-icon [icon]="faCalendarCheck" [size]="'lg'"></fa-icon>
+          </div>
+          <span class="inline break-words text-sm">
+            You have an <b>appointment</b> with {{ e.data.patientName }} at
+            <b>{{ e.data.startDate | date: 'h:mm a' }}</b> at room
+            <b>{{ e.data.room }}</b>
+          </span>
+        </div>
+        <button
+          (click)="eventClick(e)"
+          class="w-full rounded-lg bg-cyan-700 py-1 px-2 text-white hover:bg-cyan-800 md:w-auto">
+          Update
+        </button>
+      </div>
+      <div
+        *ngSwitchCase="'scope'"
+        class="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
+        <div class="flex items-center gap-4 pl-1">
+          <div class="rounded-full bg-orange-700 py-1 px-2 text-white">
+            <fa-icon [icon]="faFlask" [size]="'lg'"></fa-icon>
+          </div>
+          <span class="inline break-words text-sm">
+            <b> Sampling result</b> for endoscope (<b>{{
+              endoscopeService.getEndoscopeBySerialNo(e.data.serialNo)?.label
+            }}</b
+            >) will be back
+          </span>
+        </div>
+        <button
+          (click)="eventClick(e)"
+          class="w-full rounded-lg bg-orange-700 py-1 px-2 text-white hover:bg-orange-800 md:w-auto">
+          Update
+        </button>
+      </div>
+      <div
+        *ngSwitchCase="'washer'"
+        class="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
+        <div class="flex items-center gap-4 pl-1">
+          <div class="rounded-full bg-orange-700 py-1 px-2 text-white">
+            <fa-icon [icon]="faFlask" [size]="'lg'"></fa-icon>
+          </div>
+          <span class="inline break-words text-sm">
+            <b>Sampling result</b> for washer (<b>{{
+              washerService.getWasherBySerialNo(e.data.serialNo)?.label
+            }}</b
+            >) wiil be back
+          </span>
+        </div>
+        <button
+          (click)="eventClick(e)"
+          class="w-full rounded-lg bg-orange-700 py-1 px-2 text-white hover:bg-orange-800 md:w-auto">
+          Update
+        </button>
+      </div>
+      <div
+        *ngSwitchCase="'repair'"
+        class="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
+        <div class="flex items-center gap-4 pl-1">
+          <div class="rounded-full bg-fuchsia-700 py-1 px-2 text-white">
+            <fa-icon [icon]="faToolbox" [size]="'lg'"></fa-icon>
+          </div>
+          <span class="inline break-words text-sm">
+            <b> Repair</b> for endoscope (<b>{{
+              endoscopeService.getEndoscopeBySerialNo(e.data.serialNo)?.label
+            }}</b
+            >) will be back
+          </span>
+        </div>
+        <button
+          (click)="eventClick(e)"
+          class="w-full rounded-lg bg-fuchsia-700 py-1 px-2 text-white hover:bg-fuchsia-800 md:w-auto">
+          Update
+        </button>
+      </div>
+      <div
+        *ngSwitchCase="'loan'"
+        class="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between md:gap-0">
+        <div class="flex items-center gap-4 pl-1">
+          <div
+            class="rounded-full bg-indigo-700 px-[0.4em] pt-[0.15em] pb-[0.4em] align-middle text-white">
+            <fa-icon
+              [icon]="faHandHolding"
+              [size]="'lg'"
+              [styles]="{ 'vertical-align': 'unset' }"></fa-icon>
+          </div>
+          <span class="inline break-words text-sm">
+            <b>Loan</b> on endoscope (<b>{{
+              endoscopeService.getEndoscopeBySerialNo(e.data.serialNo)?.label
+            }}</b
+            >) will be back
+          </span>
+        </div>
+        <button
+          (click)="eventClick(e)"
+          class="w-full rounded-lg bg-indigo-700 py-1 px-2 text-white hover:bg-indigo-800 md:w-auto">
+          Update
+        </button>
+      </div>
+    </div>
+  </li>
+</ul>

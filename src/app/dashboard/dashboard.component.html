@@ -1,0 +1,401 @@
+<div class="py-6">
+  <div class="mx-auto flex flex-col gap-2 rounded-xl p-5 shadow-3xl md:w-11/12">
+    <!-- header -->
+    <div class="flex w-full flex-col justify-between gap-2 pb-2 md:flex-row">
+      <!-- date -->
+      <div class="flex items-center gap-1 font-medium">
+        <span class="text-2xl">{{
+          viewDate | calendarDate: view + 'ViewTitle':'en'
+        }}</span>
+      </div>
+
+      <!-- navigation -->
+      <div class="flex items-center justify-start gap-3 md:justify-between">
+        <button
+          (click)="onCalendarViewChange()"
+          type="button"
+          class="flex items-center justify-between gap-2 rounded-lg border border-red-700 py-1 px-1 text-center text-sm font-medium text-red-600 hover:bg-red-700 hover:text-white md:px-3">
+          <arrows-right-left-outline-icon></arrows-right-left-outline-icon>
+          <span> Switch view </span>
+        </button>
+        <div class="inline-flex rounded-md shadow-sm" role="group">
+          <button
+            type="button"
+            mwlCalendarPreviousView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            class="inline-flex items-center rounded-l-lg border border-red-700 bg-transparent py-1 px-1 text-sm font-medium text-red-600 hover:bg-red-700 hover:text-white focus:z-10 md:px-3">
+            <chevron-left-outline-icon></chevron-left-outline-icon>
+          </button>
+          <button
+            type="button"
+            mwlCalendarToday
+            [(viewDate)]="viewDate"
+            class="inline-flex items-center border-t border-b border-red-700 bg-transparent py-1 px-1 text-sm font-medium text-red-600 hover:bg-red-700 hover:text-white focus:z-10 md:px-3">
+            Today
+          </button>
+          <button
+            type="button"
+            mwlCalendarNextView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            class="px-3text-sm inline-flex items-center rounded-r-lg border border-red-700 bg-transparent py-1 px-1 font-medium text-red-600 hover:bg-red-700 hover:text-white focus:z-10 md:px-3">
+            <chevron-right-outline-icon></chevron-right-outline-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events -->
+    <span class="block text-xl font-medium">Events</span>
+    <div class="flex flex-col gap-2 md:flex-row">
+      <span
+        class="inline-flex items-center gap-2 rounded py-1 pr-2 text-xs font-medium text-cyan-700">
+        <fa-icon [icon]="faCalendarCheck" [size]="'xl'"></fa-icon>
+        My Appointment
+      </span>
+      <span
+        class="inline-flex items-center gap-2 rounded py-1 pr-2 text-xs font-medium text-orange-700">
+        <fa-icon [icon]="faFlask" [size]="'xl'"></fa-icon>
+        Sample result
+      </span>
+      <span
+        class="inline-flex items-center gap-2 rounded py-1 pr-2 text-xs font-medium text-fuchsia-700">
+        <fa-icon [icon]="faToolbox" [size]="'xl'"></fa-icon>
+        Repair return
+      </span>
+      <span
+        class="inline-flex items-center gap-2 rounded pr-2 text-xs font-medium text-indigo-700">
+        <fa-icon [icon]="faHandHolding" class="pb-2" [size]="'xl'"></fa-icon>
+        Loan return
+      </span>
+    </div>
+
+    <div [ngSwitch]="view">
+      <mwl-calendar-month-view
+        *ngSwitchCase="CalendarView.Month"
+        [viewDate]="viewDate"
+        [refresh]="refresh"
+        [events]="events"
+        (dayClicked)="dayClicked($event.day)"></mwl-calendar-month-view>
+
+      <mwl-calendar-week-view
+        *ngSwitchCase="CalendarView.Week"
+        [dayStartHour]="8"
+        [dayEndHour]="18"
+        [viewDate]="viewDate"
+        [refresh]="refresh"
+        [events]="events"
+        (hourSegmentClicked)="hourSegmentClicked($event.date)"
+        (eventClicked)="
+          handleEvent('Clicked', $event.event)
+        "></mwl-calendar-week-view>
+    </div>
+  </div>
+</div>
+
+<!-- monthly model -->
+<div
+  [ngClass]="{ hidden: selectedDate === undefined }"
+  class="fixed top-0 left-0 z-50 h-full w-full overflow-auto bg-black/40">
+  <!-- content -->
+  <div class="flex min-h-screen items-center justify-center px-8">
+    <div
+      class="relative bottom-6 z-50 mx-auto max-h-[35rem] min-w-[19rem] overflow-auto rounded-lg bg-white md:max-h-fit md:min-w-[43rem]">
+      <!-- header -->
+      <div class="flex items-center justify-between border-b p-4">
+        <h2 class="text-xl font-medium">
+          {{ selectedDate | date: 'd MMMM y' }}
+        </h2>
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-black hover:scale-125">
+          <x-mark-solid-icon></x-mark-solid-icon>
+        </button>
+      </div>
+
+      <!-- body -->
+      <div class="pb-5">
+        <!-- events -->
+        <h3 class="px-5 py-1 text-lg font-medium">Events</h3>
+        <app-event-list [events]="selectedEvents"></app-event-list>
+
+        <!-- endoscopes -->
+        <h3 class="px-5 py-1 text-lg font-medium">Endoscopes status</h3>
+        <p class="px-5 pb-1 text-sm text-gray-600">
+          Manage appointment, loan, repair and sampling test.
+        </p>
+        <div class="flex flex-col gap-1 px-5 py-1 md:flex-row">
+          <button
+            (click)="onEndoscopeClick(e)"
+            *ngFor="let e of selectedEndoscopes"
+            [ngClass]="{
+              'bg-gray-100 text-gray-800  hover:bg-gray-300':
+                e.event !== undefined,
+              'bg-green-100 text-green-800 hover:bg-green-300':
+                e.event === undefined,
+              'font-bold':
+                selectedEndoscope !== undefined &&
+                selectedEndoscope.data.serialNo === e.data.serialNo
+            }"
+            class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2.5 py-0.5 text-xs text-gray-800">
+            <x-circle-outline-icon
+              *ngIf="e.event !== undefined"></x-circle-outline-icon>
+            <check-circle-outline-icon
+              *ngIf="e.event === undefined"></check-circle-outline-icon>
+            {{ e.data.label }}
+          </button>
+        </div>
+        <!-- selected endoscope -->
+        <div *ngIf="selectedEndoscope !== undefined" class="px-5 py-1">
+          <div class="flex flex-col gap-2 p-2 align-middle shadow-lg">
+            <div class="flex flex-row gap-2 align-middle">
+              <span
+                [ngClass]="{
+                  'text-green-700': selectedEndoscope.event === undefined,
+                  'text-red-700': selectedEndoscope.event !== undefined
+                }">
+                <x-circle-solid-icon
+                  *ngIf="
+                    selectedEndoscope.event !== undefined
+                  "></x-circle-solid-icon>
+                <check-circle-outline-icon
+                  *ngIf="
+                    selectedEndoscope.event === undefined
+                  "></check-circle-outline-icon>
+              </span>
+              <span
+                class="self-center text-sm"
+                *ngIf="selectedEndoscope.event === undefined">
+                <b
+                  >{{ selectedEndoscope.data.modelNo }} ({{
+                    selectedEndoscope.data.serialNo
+                  }})</b
+                >
+                - Available</span
+              >
+              <span
+                class="self-center text-sm"
+                *ngIf="selectedEndoscope.event !== undefined">
+                <b
+                  >{{ selectedEndoscope.data.modelNo }} ({{
+                    selectedEndoscope.data.serialNo
+                  }})</b
+                >
+                - {{ selectedEndoscope.event.description }}</span
+              >
+            </div>
+            <div [ngSwitch]="selectedEndoscope.event">
+              <div
+                *ngSwitchCase="undefined"
+                class="flex flex-col gap-2 align-middle md:flex-row">
+                <button
+                  (click)="
+                    onAvailableSelectedEndoscopeClick(
+                      'appointment',
+                      selectedEndoscope
+                    )
+                  "
+                  class="w-fit rounded-md border border-green-700 px-1 text-green-700 hover:bg-green-700 hover:text-white">
+                  Create appointment
+                </button>
+                <button
+                  (click)="
+                    onAvailableSelectedEndoscopeClick('loan', selectedEndoscope)
+                  "
+                  class="w-fit rounded-md border border-green-700 px-1 text-green-700 hover:bg-green-700 hover:text-white">
+                  Create loan
+                </button>
+                <button
+                  (click)="
+                    onAvailableSelectedEndoscopeClick(
+                      'repair',
+                      selectedEndoscope
+                    )
+                  "
+                  class="w-fit rounded-md border border-green-700 px-1 text-green-700 hover:bg-green-700 hover:text-white">
+                  Send for repair
+                </button>
+                <button
+                  (click)="
+                    onAvailableSelectedEndoscopeClick(
+                      'scope',
+                      selectedEndoscope
+                    )
+                  "
+                  class="w-fit rounded-md border border-green-700 px-1 text-green-700 hover:bg-green-700 hover:text-white">
+                  Send for sampling
+                </button>
+              </div>
+              <div
+                *ngSwitchDefault
+                class="flex flex-col gap-2 align-middle md:flex-row">
+                <button
+                  (click)="
+                    onUnavailableSelectedEndoscopeClick(selectedEndoscope)
+                  "
+                  class="w-fit rounded-md border border-red-700 px-1 text-red-700 hover:bg-red-700 hover:text-white">
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- washers -->
+        <h3 class="px-5 py-1 text-lg font-medium">Washers status</h3>
+        <p class="px-5 pb-1 text-sm text-gray-600">Manage sampling test.</p>
+        <div class="flex flex-col gap-1 px-5 py-1 md:flex-row">
+          <button
+            (click)="onWasherClick(e)"
+            *ngFor="let e of selectedWashers"
+            [ngClass]="{
+              'bg-gray-100 text-gray-800  hover:bg-gray-300':
+                e.event !== undefined,
+              'bg-green-100 text-green-800 hover:bg-green-300':
+                e.event === undefined,
+              'font-bold':
+                selectedWasher !== undefined &&
+                selectedWasher.data.serialNo === e.data.serialNo
+            }"
+            class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2.5 py-0.5 text-xs text-gray-800">
+            <x-circle-outline-icon
+              *ngIf="e.event !== undefined"></x-circle-outline-icon>
+            <check-circle-outline-icon
+              *ngIf="e.event === undefined"></check-circle-outline-icon>
+            {{ e.data.label }}
+          </button>
+        </div>
+      </div>
+      <!-- selected washer -->
+      <div *ngIf="selectedWasher !== undefined" class="px-5 py-1">
+        <div class="flex flex-col gap-2 p-2 align-middle shadow-lg">
+          <div class="flex flex-row gap-2 align-middle">
+            <span
+              [ngClass]="{
+                'text-green-700': selectedWasher.event === undefined,
+                'text-red-700': selectedWasher.event !== undefined
+              }">
+              <x-circle-solid-icon
+                *ngIf="
+                  selectedWasher.event !== undefined
+                "></x-circle-solid-icon>
+              <check-circle-outline-icon
+                *ngIf="
+                  selectedWasher.event === undefined
+                "></check-circle-outline-icon>
+            </span>
+            <span
+              class="self-center text-sm"
+              *ngIf="selectedWasher.event === undefined">
+              <b
+                >{{ selectedWasher.data.modelNo }} ({{
+                  selectedWasher.data.serialNo
+                }})</b
+              >
+              - Available</span
+            >
+            <span
+              class="self-center text-sm"
+              *ngIf="selectedWasher.event !== undefined">
+              <b>
+                {{ selectedWasher.data.modelNo }} ({{
+                  selectedWasher.data.serialNo
+                }})</b
+              >
+              - {{ selectedWasher.event.description }}</span
+            >
+          </div>
+          <div [ngSwitch]="selectedWasher.event">
+            <div
+              *ngSwitchCase="undefined"
+              class="flex flex-col gap-2 align-middle md:flex-row">
+              <button
+                (click)="onAvailableSelectedWasherClick(selectedWasher)"
+                class="w-fit rounded-md border border-green-700 px-1 text-green-700 hover:bg-green-700 hover:text-white">
+                Send for sampling
+              </button>
+            </div>
+            <div
+              *ngSwitchDefault
+              class="flex flex-col gap-2 align-middle md:flex-row">
+              <button
+                (click)="onUnavailableSelectedWasherClick(selectedWasher)"
+                class="w-fit rounded-md border border-red-700 px-1 text-red-700 hover:bg-red-700 hover:text-white">
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- weekly modal -->
+<div
+  [ngClass]="{ hidden: selectedDateTime === undefined }"
+  class="fixed top-0 left-0 z-50 h-full w-full overflow-auto bg-black/40">
+  <!-- content -->
+  <div class="flex min-h-screen items-center justify-center px-8">
+    <div
+      class="relative bottom-6 z-50 mx-auto max-h-[35rem] min-w-[19rem] overflow-auto rounded-lg bg-white md:max-h-fit md:w-[24rem]">
+      <div class="flex items-center justify-between border-b p-4">
+        <h2 class="text-lg font-medium">
+          {{ selectedDateTime | date: 'd MMM h:mm a' }}
+        </h2>
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-black hover:scale-125">
+          <x-mark-solid-icon></x-mark-solid-icon>
+        </button>
+      </div>
+      <div class="flex flex-col gap-3 px-2 py-4">
+        <button
+          (click)="createFormClick('appointment')"
+          type="button"
+          class="flex w-full items-center justify-start gap-2 rounded-md border border-cyan-700 py-2 px-1 text-center text-sm font-medium text-cyan-700 hover:bg-cyan-700 hover:text-white md:px-3">
+          <fa-icon [icon]="faCalendarCheck" [size]="'xl'"></fa-icon>
+          <span> Create appointment </span>
+        </button>
+
+        <button
+          (click)="createFormClick('loan')"
+          type="button"
+          class="flex w-full items-center justify-start gap-2 rounded-md border border-indigo-700 py-2 px-1 text-center text-sm font-medium text-indigo-700 hover:bg-indigo-700 hover:text-white md:px-3">
+          <fa-icon
+            [icon]="faHandHolding"
+            [size]="'xl'"
+            [styles]="{ 'vertical-align': 'baseline' }"></fa-icon>
+          <span> Create loan </span>
+        </button>
+
+        <button
+          (click)="createFormClick('repair')"
+          type="button"
+          class="flex w-full items-center justify-start gap-2 rounded-md border border-fuchsia-700 py-2 px-1 text-center text-sm font-medium text-fuchsia-700 hover:bg-fuchsia-700 hover:text-white md:px-3">
+          <fa-icon [icon]="faToolbox" [size]="'xl'"></fa-icon>
+          <span> Create repair </span>
+        </button>
+
+        <button
+          (click)="createFormClick('washer')"
+          type="button"
+          class="flex w-full items-center justify-start gap-2 rounded-md border border-blue-700 py-2 px-1 text-center text-sm font-medium text-blue-700 hover:bg-blue-700 hover:text-white md:px-3">
+          <fa-icon [icon]="faDroplet" [size]="'xl'"></fa-icon>
+          <span> Create washer sampling </span>
+        </button>
+
+        <button
+          (click)="createFormClick('scope')"
+          type="button"
+          class="flex w-full items-center justify-start gap-2 rounded-md border border-orange-700 py-2 px-1 text-center text-sm font-medium text-orange-700 hover:bg-orange-700 hover:text-white md:px-3">
+          <fa-icon [icon]="faKitMedical" [size]="'xl'"></fa-icon>
+          <span> Create endoscope sampling </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

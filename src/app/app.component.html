@@ -1,0 +1,154 @@
+<div class="h-screen w-full">
+  <!-- App bar -->
+  <nav class="px-4 py-2 shadow-md">
+    <div class="flex flex-wrap items-center justify-between">
+      <a routerLink="/" class="flex items-center">
+        <img
+          src="./assets/logo.png"
+          alt="Tan Tock Seng Hospital"
+          height="38"
+          width="120" />
+      </a>
+
+      <!-- top navigations -->
+      <div
+        *ngIf="user$ | async"
+        class="hidden w-full items-center justify-between md:flex md:w-auto">
+        <ul
+          class="mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:text-sm md:font-medium">
+          <li>
+            <a
+              [ngClass]="{ 'text-red-700': router.url.includes('/dashboard') }"
+              routerLink="/dashboard"
+              class="flex items-center gap-1 py-2 pr-4 pl-3 md:bg-transparent md:p-0 md:hover:text-red-700">
+              <squares-2-x-2-outline-icon
+                [size]="26"></squares-2-x-2-outline-icon>
+              Dashboard</a
+            >
+          </li>
+          <li>
+            <a
+              [ngClass]="{ 'text-red-700': router.url.includes('/form') }"
+              routerLink="/form"
+              class="flex items-center gap-1 py-2 pr-4 pl-3 md:p-0 md:hover:bg-transparent md:hover:text-red-700">
+              <pencil-square-outline-icon
+                [size]="26"></pencil-square-outline-icon>
+              Form</a
+            >
+          </li>
+          <li>
+            <a
+              [ngClass]="{ 'text-red-700': router.url.includes('/equipment') }"
+              routerLink="/equipment"
+              class="flex items-center gap-1 py-2 pr-4 pl-3 md:p-0 md:hover:bg-transparent md:hover:text-red-700">
+              <wrench-screwdriver-outline-icon
+                [size]="26"></wrench-screwdriver-outline-icon>
+              Equipment</a
+            >
+          </li>
+        </ul>
+      </div>
+
+      <!-- notification -->
+      <div
+        *ngIf="user$ | async"
+        class="flex items-center justify-between gap-1">
+        <button
+          type="button"
+          (click)="onHideNotificationDropDown()"
+          appClickOutside
+          class="relative mr-3 flex rounded-full text-red-700 focus:ring-2 focus:ring-red-600"
+          (clickOutside)="hideNotificationDropDown = true">
+          <bell-outline-icon [size]="30"></bell-outline-icon>
+          <div
+            *ngIf="notifications.length > 0"
+            class="absolute -top-1.5 -right-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+            {{ notifications.length }}
+          </div>
+        </button>
+
+        <!-- notification dropdown  -->
+        <div
+          [ngClass]="{ hidden: hideNotificationDropDown }"
+          class="shadow-l absolute top-10 right-4 z-50 my-4 h-1/2 w-72 list-none divide-y divide-gray-100 overflow-auto rounded bg-white text-base md:h-80 md:w-[27rem]">
+          <app-event-list [events]="notifications"></app-event-list>
+        </div>
+
+        <!-- profile button -->
+        <button
+          type="button"
+          class="mr-3 flex rounded-full text-red-700 focus:ring-2 focus:ring-red-600"
+          (click)="onHideProfileDropDown()"
+          appClickOutside
+          (clickOutside)="hideProfileDropDown = true">
+          <user-circle-solid-icon [size]="30"></user-circle-solid-icon>
+        </button>
+
+        <!-- profile dropdown -->
+        <div
+          [ngClass]="{ hidden: hideProfileDropDown }"
+          class="absolute top-10 right-4 z-50 my-4 w-32 min-w-fit list-none divide-y divide-gray-100 rounded bg-white text-base shadow">
+          <div class="py-3 px-4">
+            <span class="block text-sm text-gray-900">John Doe</span>
+          </div>
+          <ul class="py-1" aria-labelledby="user-menu-button">
+            <li>
+              <button
+                routerLink="/help-center"
+                class="w-full py-2 px-4 text-left text-sm text-gray-700 hover:bg-gray-100">
+                Help Center
+              </button>
+            </li>
+            <li>
+              <button
+                (click)="onLogout()"
+                class="w-full py-2 px-4 text-left text-sm text-gray-700 hover:bg-gray-100">
+                Logout
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- content -->
+  <div class="h-auto w-auto pb-20 md:pb-0">
+    <router-outlet></router-outlet>
+  </div>
+
+  <!-- bottom navigation (tablet/mobile only) -->
+  <section
+    *ngIf="user$ | async"
+    class="fixed inset-x-0 bottom-0 z-10 block bg-white shadow md:hidden">
+    <div id="tabs" class="flex justify-between">
+      <a
+        [ngClass]="{ 'text-red-700': router.url.includes('/dashboard') }"
+        routerLink="/dashboard"
+        class="inline-block w-full justify-center pt-2 pb-1 text-center hover:text-red-700">
+        <squares-2-x-2-outline-icon
+          [size]="28"
+          class="mb-1 inline-block"></squares-2-x-2-outline-icon>
+        <span class="tab tab-home block text-xs">Dashboard</span>
+      </a>
+      <a
+        [ngClass]="{ 'text-red-700': router.url.includes('/form') }"
+        routerLink="/form"
+        class="inline-block w-full justify-center pt-2 pb-1 text-center hover:text-red-700">
+        <pencil-square-outline-icon
+          [size]="28"
+          class="mb-1 inline-block"></pencil-square-outline-icon>
+        <span class="tab tab-home block text-xs">Form</span>
+      </a>
+      <a
+        [ngClass]="{ 'text-red-700': router.url.includes('/equipment') }"
+        routerLink="/equipment"
+        class="inline-block w-full justify-center pt-2 pb-1 text-center hover:text-red-700">
+        <wrench-screwdriver-outline-icon
+          [size]="28"
+          class="mb-1 inline-block"></wrench-screwdriver-outline-icon>
+        <span class="tab tab-home block text-xs">Equipment</span>
+      </a>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,26 @@
+<div class="pb-6">
+  <div
+    class="mx-auto mt-6 flex h-full w-11/12 flex-col gap-3 rounded-md pt-5 pb-1 shadow-3xl md:mt-8 md:w-5/6 lg:w-2/4">
+    <!-- Form header -->
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-row content-center">
+        <h2 class="grow self-center text-center text-xl font-medium">
+          Page not found
+        </h2>
+      </div>
+    </div>
+    <div class="flex flex-col items-center justify-center gap-3 py-4">
+      <img
+        src="./assets/lost.svg"
+        alt="404 not found"
+        height="120"
+        width="250" />
+      <span>The page you are looking for doesn't exist.</span>
+      <a
+        [routerLink]="'/'"
+        class="w-auto rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800">
+        Return
+      </a>
+    </div>
+  </div>
+</div>

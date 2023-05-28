@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "csc2005-team13"
+  },
+  "targets": {
+    "csc2005-team13": {
+      "hosting": {
+        "csc2005-team13-2022": [
+          "csc2005-team13"
+        ]
+      }
+    }
+  }
+}

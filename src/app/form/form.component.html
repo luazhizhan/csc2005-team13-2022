@@ -1,0 +1,1275 @@
+<div class="pb-6">
+  <div
+    class="mx-auto mt-6 flex h-full w-11/12 flex-col gap-3 rounded-md p-5 shadow-3xl md:mt-8 md:w-5/6 lg:w-2/4">
+    <!-- Form header -->
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-row content-center">
+        <h2 class="grow self-center text-center text-xl font-medium">Form</h2>
+      </div>
+      <div *ngIf="showSelectForm()">
+        <label
+          for="selectForm"
+          class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-400"
+          >Select a form</label
+        >
+        <select
+          id="selectForm"
+          [disabled]="routeData !== undefined"
+          (change)="onSelectFormChange($event)"
+          class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+          <option
+            [value]="undefined"
+            [selected]="formType === undefined"
+            disabled>
+            Select your option
+          </option>
+          <option value="create-loan" [selected]="formType === 'create-loan'">
+            Create loan
+          </option>
+          <option
+            value="update-loan"
+            [selected]="formType === 'update-loan'"
+            *ngIf="routeData !== undefined">
+            Update loan
+          </option>
+          <option
+            value="create-repair"
+            [selected]="formType === 'create-repair'">
+            Create repair
+          </option>
+          <option
+            value="update-repair"
+            [selected]="formType === 'update-repair'"
+            *ngIf="routeData !== undefined">
+            Update repair
+          </option>
+          <option
+            value="create-washer"
+            [selected]="formType === 'create-washer'">
+            Create washer sampling
+          </option>
+          <option
+            value="update-washer"
+            [selected]="formType === 'update-washer'"
+            *ngIf="routeData !== undefined">
+            Update washer sampling
+          </option>
+          <option value="create-scope" [selected]="formType === 'create-scope'">
+            Create scope sampling
+          </option>
+          <option
+            value="update-scope"
+            [selected]="formType === 'update-scope'"
+            *ngIf="routeData !== undefined">
+            Update scope sampling
+          </option>
+          <option
+            value="create-appointment"
+            [selected]="formType === 'create-appointment'">
+            Create appointment
+          </option>
+          <option
+            value="update-appointment"
+            [selected]="formType === 'update-appointment'"
+            *ngIf="routeData !== undefined">
+            Update appointment
+          </option>
+        </select>
+      </div>
+      <p *ngIf="formType !== undefined" class="text-sm text-gray-800">
+        * - Required field
+      </p>
+    </div>
+
+    <div [ngSwitch]="formType">
+      <!-- Update endoscope sample form -->
+      <form
+        *ngSwitchCase="'update-scope'"
+        [formGroup]="updateScopeForm"
+        class="flex flex-col gap-3"
+        (ngSubmit)="onSubmit()">
+        <h2 class="text-base font-medium">Update endoscope sampling result</h2>
+        <!-- Exisiting records -->
+        <section class="flex flex-col gap-2 p-3 align-middle shadow-md">
+          <div class="flex items-center gap-1">
+            <div class="rounded-full bg-orange-700 py-1 px-2 text-white">
+              <fa-icon [icon]="faFlask"></fa-icon>
+            </div>
+            <h2 class="text-md font-medium">
+              {{ endoscope.label }}
+            </h2>
+          </div>
+
+          <p class="text-sm">
+            Model no:
+            <span class="font-medium"> {{ endoscope.modelNo }}</span>
+          </p>
+          <p class="text-sm">
+            Serial no:
+            <span class="font-medium"> {{ endoscope.serialNo }}</span>
+          </p>
+
+          <p class="text-sm">
+            Type:
+            <span class="font-medium"> {{ routeData.type }}</span>
+          </p>
+          <p class="text-sm">
+            Send on:
+            <span class="font-medium">
+              {{ routeData.sendDate | date: 'd MMM y' }}</span
+            >
+          </p>
+          <p class="text-sm">
+            Expected on:
+            <span class="font-medium">
+              {{ routeData.expectedResultDate | date: 'd MMM y' }}</span
+            >
+          </p>
+          <p class="text-sm">
+            Disinfectant:
+            <span class="font-medium">
+              {{ routeData.disinfectant }} ({{
+                routeData.disinfectantNo
+              }})</span
+            >
+          </p>
+          <p class="text-sm">
+            Disinfectant last change:
+            <span class="font-medium">{{
+              routeData.disinfectantChanged | date: 'd MMM y'
+            }}</span>
+          </p>
+          <p class="text-sm">
+            Detergent:
+            <span class="font-medium"
+              >{{ routeData.detergent }} ({{ routeData.detergentLotNo }})</span
+            >
+          </p>
+        </section>
+
+        <!-- Result -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div
+              class="text-clip rounded-full bg-pink-500 py-1 pr-1.5 pl-2.5 text-white">
+              <fa-icon [icon]="faFileCircleCheck"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Result</h3>
+          </div>
+
+          <div>
+            <label for="resultDate" class="mb-2 block text-sm font-medium">
+              Date of result*
+            </label>
+            <input
+              id="resultDate"
+              type="date"
+              [max]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="resultDate" />
+            <p
+              *ngIf="
+                updateScopeForm.controls.resultDate.hasError('required') &&
+                updateScopeForm.controls.resultDate.dirty
+              "
+              class="text-red-600">
+              Date of result is required
+            </p>
+          </div>
+
+          <div>
+            <label for="repeatDate" class="mb-2 block text-sm font-medium">
+              Repeat date
+            </label>
+            <input
+              id="repeatDate"
+              type="date"
+              formControlName="repeatDate"
+              [min]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+
+          <div>
+            <label
+              for="quarantineRequired"
+              class="mb-2 block text-sm font-medium">
+              Quarantine Required*
+            </label>
+            <select
+              id="quarantineRequired"
+              formControlName="quarantineRequired"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.quarantineRequired.hasError(
+                  'required'
+                ) && updateScopeForm.controls.quarantineRequired.dirty
+              "
+              class="text-red-600">
+              "Qaurantine required" is required
+            </p>
+          </div>
+        </section>
+
+        <!-- In charge -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-yellow-500 py-1 px-2.5 text-white">
+              <fa-icon [icon]="faUserNurse"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">In charge</h3>
+          </div>
+
+          <div>
+            <label for="washedBy" class="mb-2 block text-sm font-medium">
+              Washed by*
+            </label>
+            <select
+              id="washedBy"
+              formControlName="washedBy"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option *ngFor="let u of users" [value]="u.id">
+                {{ u.firstname }} {{ u.lastname }}
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.washedBy.hasError('required') &&
+                updateScopeForm.controls.washedBy.dirty
+              "
+              class="text-red-600">
+              Washed by is required
+            </p>
+          </div>
+
+          <!-- Collected by -->
+          <div>
+            <label for="collectedBy" class="mb-2 block text-sm font-medium">
+              Collected by*
+            </label>
+            <select
+              id="collectedBy"
+              formControlName="collectedBy"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option *ngFor="let u of users" [value]="u.id">
+                {{ u.firstname }} {{ u.lastname }}
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.collectedBy.hasError('required') &&
+                updateScopeForm.controls.collectedBy.dirty
+              "
+              class="text-red-600">
+              Collected by is required
+            </p>
+          </div>
+
+          <!-- Circulated by -->
+          <div>
+            <label for="circulatedBy" class="mb-2 block text-sm font-medium">
+              Circulated by*
+            </label>
+            <select
+              id="circulatedBy"
+              formControlName="circulatedBy"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option *ngFor="let u of users" [value]="u.id">
+                {{ u.firstname }} {{ u.lastname }}
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.circulatedBy.hasError('required') &&
+                updateScopeForm.controls.circulatedBy.dirty
+              "
+              class="text-red-600">
+              Circulated by is required
+            </p>
+          </div>
+        </section>
+
+        <!-- Dryer -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-blue-300 py-1 px-2.5 text-white">
+              <fa-icon [icon]="faWind"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Dryer</h3>
+          </div>
+
+          <div>
+            <label for="dryer" class="mb-2 block text-sm font-medium">
+              Type*
+            </label>
+            <select
+              id="dryer"
+              formControlName="dryer"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="Dryer 1">Dryer 1</option>
+              <option value="Dryer 2">Dryer 2</option>
+              <option value="Dryer 3">Dryer 3</option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.dryer.hasError('required') &&
+                updateScopeForm.controls.dryer.dirty
+              "
+              class="text-red-600">
+              Dryer type is required
+            </p>
+          </div>
+
+          <div>
+            <label for="dryerLevel" class="mb-2 block text-sm font-medium">
+              Level*
+            </label>
+            <select
+              id="dryerLevel"
+              formControlName="dryerLevel"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="Level 1">Level 1</option>
+              <option value="Level 2">Level 2</option>
+              <option value="Level 3">Level 3</option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.dryerLevel.hasError('required') &&
+                updateScopeForm.controls.dryerLevel.dirty
+              "
+              class="text-red-600">
+              Dryer level is required
+            </p>
+          </div>
+
+          <div>
+            <label for="dryerRemarks" class="mb-2 block text-sm font-medium">
+              Remarks
+            </label>
+            <input
+              id="dryerRemarks"
+              type="text"
+              autocomplete="on"
+              formControlName="dryerRemarks"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+        </section>
+
+        <!-- fluid -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-sky-500 py-1 px-2.5 text-white">
+              <fa-icon [icon]="faDroplet"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Fluid</h3>
+          </div>
+          <div>
+            <label for="fluidResult" class="mb-2 block text-sm font-medium">
+              Result*
+            </label>
+            <select
+              id="fluidResult"
+              formControlName="fluidResult"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="No Growth">No Growth</option>
+              <option value="Got Growth">Got Growth</option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.fluidResult.hasError('required') &&
+                updateScopeForm.controls.fluidResult.dirty
+              "
+              class="text-red-600">
+              Fluid result is required
+            </p>
+          </div>
+
+          <div>
+            <label for="fluidComments" class="mb-2 block text-sm font-medium">
+              Comments
+            </label>
+            <input
+              id="fluidComments"
+              type="text"
+              autocomplete="on"
+              formControlName="fluidComments"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+
+          <div>
+            <label for="fluidAction" class="mb-2 block text-sm font-medium">
+              Action
+            </label>
+            <input
+              id="fluidAction"
+              type="text"
+              autocomplete="on"
+              formControlName="fluidAction"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+        </section>
+
+        <!-- Swab -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-green-500 py-1 px-2 text-white">
+              <fa-icon [icon]="faVial"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Swab</h3>
+          </div>
+          <div>
+            <label for="swabResult" class="mb-2 block text-sm font-medium">
+              Result*
+            </label>
+            <select
+              id="swabResult"
+              formControlName="swabResult"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="No Growth">No Growth</option>
+              <option value="Got Growth">Got Growth</option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.swabResult.hasError('required') &&
+                updateScopeForm.controls.swabResult.dirty
+              "
+              class="text-red-600">
+              Swab result is required
+            </p>
+          </div>
+
+          <div>
+            <label for="swabComments" class="mb-2 block text-sm font-medium">
+              Comments
+            </label>
+            <input
+              id="swabComments"
+              type="text"
+              autocomplete="on"
+              formControlName="swabComments"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+
+          <div>
+            <label for="swabAction" class="mb-2 block text-sm font-medium">
+              Action
+            </label>
+            <input
+              id="swabAction"
+              type="text"
+              autocomplete="on"
+              formControlName="swabAction"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+        </section>
+
+        <p *ngIf="formError" class="inline-flex gap-1 text-red-600">
+          <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+          {{ formError }}
+        </p>
+        <p *ngIf="formSuccess" class="inline-flex gap-1">
+          <check-circle-solid-icon></check-circle-solid-icon>
+          {{ formSuccess }}
+        </p>
+        <button
+          #submit
+          [disabled]="
+            (updateScopeForm.invalid && updateScopeForm.dirty) ||
+            submitText !== 'Update'
+          "
+          type="submit"
+          class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+          {{ submitText }}
+        </button>
+      </form>
+
+      <!-- Update washer sample form -->
+      <form
+        *ngSwitchCase="'update-washer'"
+        [formGroup]="updateWasherForm"
+        class="flex flex-col gap-3"
+        (ngSubmit)="onSubmit()">
+        <h2 class="text-base font-medium">Update washer sampling result</h2>
+        <!-- Exisiting records -->
+        <section class="flex flex-col gap-2 p-3 align-middle shadow-md">
+          <div class="flex items-center gap-1">
+            <div class="rounded-full bg-orange-700 py-1 px-2 text-white">
+              <fa-icon [icon]="faFlask"></fa-icon>
+            </div>
+            <h2 class="text-md font-medium">
+              {{ washer.label }}
+            </h2>
+          </div>
+
+          <p class="text-sm">
+            Model no:
+            <span class="font-medium"> {{ washer.modelNo }}</span>
+          </p>
+          <p class="text-sm">
+            Serial no:
+            <span class="font-medium"> {{ washer.serialNo }}</span>
+          </p>
+
+          <p class="text-sm">
+            Send on:
+            <span class="font-medium">
+              {{ routeData.sendDate | date: 'd MMM y' }}</span
+            >
+          </p>
+          <p class="text-sm">
+            Expected on:
+            <span class="font-medium">
+              {{ routeData.expectedResultDate | date: 'd MMM y' }}</span
+            >
+          </p>
+          <p class="text-sm">
+            Disinfectant:
+            <span class="font-medium">
+              {{ routeData.disinfectant }} ({{
+                routeData.disinfectantNo
+              }})</span
+            >
+          </p>
+          <p class="text-sm">
+            Disinfectant last changed:
+            <span class="font-medium">{{
+              routeData.disinfectantChanged | date: 'd MMM y'
+            }}</span>
+          </p>
+          <p class="text-sm">
+            Detergent:
+            <span class="font-medium"
+              >{{ routeData.detergent }} ({{ routeData.detergentLotNo }})</span
+            >
+          </p>
+          <p class="text-sm">
+            Filter last changed:
+            <span class="font-medium">{{
+              routeData.filterChangeDate | date: 'd MMM y'
+            }}</span>
+          </p>
+        </section>
+
+        <!-- Result -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div
+              class="text-clip rounded-full bg-pink-500 py-1 pr-1.5 pl-2.5 text-white">
+              <fa-icon [icon]="faFileCircleCheck"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Result</h3>
+          </div>
+
+          <div>
+            <label for="resultDate" class="mb-2 block text-sm font-medium">
+              Date of result*
+            </label>
+            <input
+              id="resultDate"
+              type="date"
+              [max]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="resultDate" />
+            <p
+              *ngIf="
+                updateScopeForm.controls.resultDate.hasError('required') &&
+                updateScopeForm.controls.resultDate.dirty
+              "
+              class="text-red-600">
+              Date of result is required
+            </p>
+          </div>
+
+          <div>
+            <label for="repeatDate" class="mb-2 block text-sm font-medium">
+              Repeat date
+            </label>
+            <input
+              id="repeatDate"
+              type="date"
+              formControlName="repeatDate"
+              [min]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+
+          <div>
+            <label
+              for="quarantineRequired"
+              class="mb-2 block text-sm font-medium">
+              Quarantine Required*
+            </label>
+            <select
+              id="quarantineRequired"
+              formControlName="quarantineRequired"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+            <p
+              *ngIf="
+                updateScopeForm.controls.quarantineRequired.hasError(
+                  'required'
+                ) && updateScopeForm.controls.quarantineRequired.dirty
+              "
+              class="text-red-600">
+              "Qaurantine required" is required
+            </p>
+          </div>
+
+          <div>
+            <label for="remarks" class="mb-2 block text-sm font-medium">
+              Remarks
+            </label>
+            <input
+              id="remarks"
+              type="text"
+              autocomplete="on"
+              formControlName="remarks"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+        </section>
+
+        <!-- In charge -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-yellow-500 py-1 px-2.5 text-white">
+              <fa-icon [icon]="faUserNurse"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">In charge</h3>
+          </div>
+
+          <!-- Collected by -->
+          <div>
+            <label for="collectedBy" class="mb-2 block text-sm font-medium">
+              Collected by*
+            </label>
+            <select
+              id="collectedBy"
+              formControlName="collectedBy"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option *ngFor="let u of users" [value]="u.id">
+                {{ u.firstname }} {{ u.lastname }}
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateWasherForm.controls.collectedBy.hasError('required') &&
+                updateWasherForm.controls.collectedBy.dirty
+              "
+              class="text-red-600">
+              Collected by is required
+            </p>
+          </div>
+
+          <!-- Circulated by -->
+          <div>
+            <label for="circulatedBy" class="mb-2 block text-sm font-medium">
+              Circulated by*
+            </label>
+            <select
+              id="circulatedBy"
+              formControlName="circulatedBy"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option *ngFor="let u of users" [value]="u.id">
+                {{ u.firstname }} {{ u.lastname }}
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateWasherForm.controls.circulatedBy.hasError('required') &&
+                updateWasherForm.controls.circulatedBy.dirty
+              "
+              class="text-red-600">
+              Circulated by is required
+            </p>
+          </div>
+        </section>
+
+        <!-- fluid -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div class="rounded-full bg-sky-500 py-1 px-2.5 text-white">
+              <fa-icon [icon]="faDroplet"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Fluid</h3>
+          </div>
+          <div>
+            <label for="fluidResult" class="mb-2 block text-sm font-medium">
+              Result*
+            </label>
+            <select
+              id="fluidResult"
+              formControlName="fluidResult"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="No Growth">No Growth</option>
+              <option value="Got Growth">Got Growth</option>
+            </select>
+            <p
+              *ngIf="
+                updateWasherForm.controls.fluidResult.hasError('required') &&
+                updateWasherForm.controls.fluidResult.dirty
+              "
+              class="text-red-600">
+              Fluid result is required
+            </p>
+          </div>
+
+          <div>
+            <label for="analysis" class="mb-2 block text-sm font-medium">
+              Analysis
+            </label>
+            <input
+              id="analysis"
+              type="text"
+              autocomplete="on"
+              formControlName="analysis"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+
+          <div>
+            <label for="fluidAction" class="mb-2 block text-sm font-medium">
+              Action Taken
+            </label>
+            <input
+              id="actionTaken"
+              type="text"
+              autocomplete="on"
+              formControlName="actionTaken"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+          </div>
+        </section>
+
+        <p *ngIf="formError" class="inline-flex gap-1 text-red-600">
+          <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+          {{ formError }}
+        </p>
+        <p *ngIf="formSuccess" class="inline-flex gap-1">
+          <check-circle-solid-icon></check-circle-solid-icon>
+          {{ formSuccess }}
+        </p>
+        <button
+          #submit
+          [disabled]="
+            (updateWasherForm.invalid && updateWasherForm.dirty) ||
+            submitText !== 'Update'
+          "
+          type="submit"
+          class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+          {{ submitText }}
+        </button>
+      </form>
+
+      <!-- Update loan form -->
+      <form
+        *ngSwitchCase="'update-loan'"
+        [formGroup]="updateLoanForm"
+        class="flex flex-col gap-3"
+        (ngSubmit)="onSubmit()">
+        <h2 class="text-base font-medium">Update endoscope loan</h2>
+        <!-- Exisiting records -->
+        <section class="flex flex-col gap-2 p-3 align-middle shadow-md">
+          <div class="flex items-center gap-1">
+            <div class="rounded-full bg-indigo-700 py-1 px-2 text-white">
+              <fa-icon [icon]="faCalendarCheck"></fa-icon>
+            </div>
+            <h2 class="text-md font-medium">
+              {{ endoscope.label }}
+            </h2>
+          </div>
+
+          <p class="text-sm">
+            Model no:
+            <span class="font-medium"> {{ endoscope.modelNo }}</span>
+          </p>
+          <p class="text-sm">
+            Serial no:
+            <span class="font-medium"> {{ endoscope.serialNo }}</span>
+          </p>
+
+          <p class="text-sm">
+            In charge:
+            <span class="font-medium">
+              {{ incharge.firstname }} {{ incharge.lastname }}</span
+            >
+          </p>
+
+          <p class="text-sm">
+            Loan date:
+            <span class="font-medium">
+              {{ routeData.date | date: 'd MMM y' }}</span
+            >
+          </p>
+
+          <p class="text-sm">
+            Expected return date:
+            <span class="font-medium">
+              {{ routeData.expectedDate | date: 'd MMM y' }}</span
+            >
+          </p>
+
+          <p class="text-sm">
+            Remarks:
+            <span class="font-medium"> {{ routeData.remarks }}</span>
+          </p>
+
+          <div>
+            <label for="returnDate" class="mb-2 block text-sm font-medium">
+              Return date*
+            </label>
+            <input
+              id="returnDate"
+              type="date"
+              [max]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="returnDate" />
+            <p
+              *ngIf="
+                updateLoanForm.controls.returnDate.hasError('required') &&
+                updateLoanForm.controls.returnDate.dirty
+              "
+              class="text-red-600">
+              Return date is required
+            </p>
+          </div>
+        </section>
+
+        <!-- sample form -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div
+              class="text-clip rounded-full bg-orange-500 py-1 px-2 text-white">
+              <fa-icon [icon]="faVial"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Send for sampling</h3>
+          </div>
+
+          <div>
+            <label for="sendDate" class="mb-2 block text-sm font-medium">
+              Date of send*
+            </label>
+            <input
+              id="sendDate"
+              type="date"
+              [min]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="sendDate" />
+            <p
+              *ngIf="
+                updateLoanForm.controls.sendDate.hasError('required') &&
+                updateLoanForm.controls.sendDate.dirty
+              "
+              class="text-red-600">
+              Date of send is required
+            </p>
+          </div>
+
+          <div>
+            <label
+              for="expectedResultDate"
+              class="mb-2 block text-sm font-medium">
+              Expected date*
+            </label>
+            <input
+              id="expectedResultDate"
+              type="date"
+              [min]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="expectedResultDate" />
+            <p
+              *ngIf="
+                updateLoanForm.controls.expectedResultDate.hasError(
+                  'required'
+                ) && updateLoanForm.controls.expectedResultDate.dirty
+              "
+              class="text-red-600">
+              Expected date is required
+            </p>
+          </div>
+
+          <div>
+            <label for="disinfection" class="mb-2 block text-sm font-medium">
+              Disinfection*
+            </label>
+            <select
+              id="disinfection"
+              formControlName="disinfection"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="RAPICIDE PA PART A & B">
+                RAPICIDE PA PART A & B
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateLoanForm.controls.disinfection.hasError('required') &&
+                updateLoanForm.controls.disinfection.dirty
+              "
+              class="text-red-600">
+              Disinfection is required
+            </p>
+          </div>
+
+          <div>
+            <label for="disinfectantNo" class="mb-2 block text-sm font-medium">
+              Disinfectant No*
+            </label>
+            <select
+              id="disinfectantNo"
+              formControlName="disinfectantNo"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="A-506538, B-506539">A-506538, B-506539</option>
+            </select>
+            <p
+              *ngIf="
+                updateLoanForm.controls.disinfection.hasError('required') &&
+                updateLoanForm.controls.disinfection.dirty
+              "
+              class="text-red-600">
+              Disinfection No is required
+            </p>
+          </div>
+
+          <div>
+            <label for="detergent" class="mb-2 block text-sm font-medium">
+              Detergent*
+            </label>
+            <select
+              id="detergent"
+              formControlName="detergent"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="INTERCEPT PLUS">INTERCEPT PLUS</option>
+            </select>
+            <p
+              *ngIf="
+                updateLoanForm.controls.detergent.hasError('required') &&
+                updateLoanForm.controls.detergent.dirty
+              "
+              class="text-red-600">
+              Detergent is required
+            </p>
+          </div>
+
+          <div>
+            <label for="detergentLotNo" class="mb-2 block text-sm font-medium">
+              Detergent lot no*
+            </label>
+            <select
+              id="detergentLotNo"
+              formControlName="detergentLotNo"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="100000030">100000030</option>
+            </select>
+            <p
+              *ngIf="
+                updateLoanForm.controls.detergentLotNo.hasError('required') &&
+                updateLoanForm.controls.detergentLotNo.dirty
+              "
+              class="text-red-600">
+              Detergent lot no is required
+            </p>
+          </div>
+        </section>
+
+        <p *ngIf="formError" class="inline-flex gap-1 text-red-600">
+          <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+          {{ formError }}
+        </p>
+        <p *ngIf="formSuccess" class="inline-flex gap-1">
+          <check-circle-solid-icon></check-circle-solid-icon>
+          {{ formSuccess }}
+        </p>
+        <button
+          #submit
+          [disabled]="
+            (updateLoanForm.invalid && updateLoanForm.dirty) ||
+            submitText !== 'Update'
+          "
+          type="submit"
+          class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+          {{ submitText }}
+        </button>
+      </form>
+
+      <!-- Update repair form -->
+      <form
+        *ngSwitchCase="'update-repair'"
+        [formGroup]="updateRepairForm"
+        class="flex flex-col gap-3"
+        (ngSubmit)="onSubmit()">
+        <h2 class="text-base font-medium">Update endoscope repair</h2>
+        <!-- Exisiting records -->
+        <section class="flex flex-col gap-2 p-3 align-middle shadow-md">
+          <div class="flex items-center gap-1">
+            <div class="rounded-full bg-fuchsia-700 py-1 px-2 text-white">
+              <fa-icon [icon]="faToolbox"></fa-icon>
+            </div>
+            <h2 class="text-md font-medium">
+              {{ endoscope.label }}
+            </h2>
+          </div>
+
+          <p class="text-sm">
+            Model no:
+            <span class="font-medium"> {{ endoscope.modelNo }}</span>
+          </p>
+          <p class="text-sm">
+            Serial no:
+            <span class="font-medium"> {{ endoscope.serialNo }}</span>
+          </p>
+
+          <p class="text-sm">
+            In charge:
+            <span class="font-medium">
+              {{ incharge.firstname }} {{ incharge.lastname }}</span
+            >
+          </p>
+
+          <p class="text-sm">
+            Repair date:
+            <span class="font-medium">
+              {{ routeData.date | date: 'd MMM y' }}</span
+            >
+          </p>
+
+          <p class="text-sm">
+            Expected return date:
+            <span class="font-medium">
+              {{ routeData.expectedDate | date: 'd MMM y' }}</span
+            >
+          </p>
+
+          <p class="text-sm">
+            Remarks:
+            <span class="font-medium"> {{ routeData.remarks }}</span>
+          </p>
+
+          <div>
+            <label for="returnDate" class="mb-2 block text-sm font-medium">
+              Return date*
+            </label>
+            <input
+              id="returnDate"
+              type="date"
+              [max]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="returnDate" />
+            <p
+              *ngIf="
+                updateRepairForm.controls.returnDate.hasError('required') &&
+                updateRepairForm.controls.returnDate.dirty
+              "
+              class="text-red-600">
+              Return date is required
+            </p>
+          </div>
+        </section>
+
+        <!-- sample form -->
+        <section class="flex flex-col gap-3 rounded-md p-3 shadow-md">
+          <div class="flex items-center gap-2">
+            <div
+              class="text-clip rounded-full bg-orange-500 py-1 px-2 text-white">
+              <fa-icon [icon]="faVial"></fa-icon>
+            </div>
+            <h3 class="text-sm font-medium">Send for sampling</h3>
+          </div>
+
+          <div>
+            <label for="sendDate" class="mb-2 block text-sm font-medium">
+              Date of send*
+            </label>
+            <input
+              id="sendDate"
+              type="date"
+              [min]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="sendDate" />
+            <p
+              *ngIf="
+                updateRepairForm.controls.sendDate.hasError('required') &&
+                updateRepairForm.controls.sendDate.dirty
+              "
+              class="text-red-600">
+              Date of send is required
+            </p>
+          </div>
+
+          <div>
+            <label
+              for="expectedResultDate"
+              class="mb-2 block text-sm font-medium">
+              Expected date*
+            </label>
+            <input
+              id="expectedResultDate"
+              type="date"
+              [min]="today"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+              formControlName="expectedResultDate" />
+            <p
+              *ngIf="
+                updateRepairForm.controls.expectedResultDate.hasError(
+                  'required'
+                ) && updateRepairForm.controls.expectedResultDate.dirty
+              "
+              class="text-red-600">
+              Expected date is required
+            </p>
+          </div>
+
+          <div>
+            <label for="disinfection" class="mb-2 block text-sm font-medium">
+              Disinfection*
+            </label>
+            <select
+              id="disinfection"
+              formControlName="disinfection"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="RAPICIDE PA PART A & B">
+                RAPICIDE PA PART A & B
+              </option>
+            </select>
+            <p
+              *ngIf="
+                updateRepairForm.controls.disinfection.hasError('required') &&
+                updateRepairForm.controls.disinfection.dirty
+              "
+              class="text-red-600">
+              Disinfection is required
+            </p>
+          </div>
+
+          <div>
+            <label for="disinfectantNo" class="mb-2 block text-sm font-medium">
+              Disinfectant No*
+            </label>
+            <select
+              id="disinfectantNo"
+              formControlName="disinfectantNo"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="A-506538, B-506539">A-506538, B-506539</option>
+            </select>
+            <p
+              *ngIf="
+                updateRepairForm.controls.disinfection.hasError('required') &&
+                updateRepairForm.controls.disinfection.dirty
+              "
+              class="text-red-600">
+              Disinfection No is required
+            </p>
+          </div>
+
+          <div>
+            <label for="detergent" class="mb-2 block text-sm font-medium">
+              Detergent*
+            </label>
+            <select
+              id="detergent"
+              formControlName="detergent"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="INTERCEPT PLUS">INTERCEPT PLUS</option>
+            </select>
+            <p
+              *ngIf="
+                updateRepairForm.controls.detergent.hasError('required') &&
+                updateRepairForm.controls.detergent.dirty
+              "
+              class="text-red-600">
+              Detergent is required
+            </p>
+          </div>
+
+          <div>
+            <label for="detergentLotNo" class="mb-2 block text-sm font-medium">
+              Detergent lot no*
+            </label>
+            <select
+              id="detergentLotNo"
+              formControlName="detergentLotNo"
+              class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+              <option value="100000030">100000030</option>
+            </select>
+            <p
+              *ngIf="
+                updateRepairForm.controls.detergentLotNo.hasError('required') &&
+                updateRepairForm.controls.detergentLotNo.dirty
+              "
+              class="text-red-600">
+              Detergent lot no is required
+            </p>
+          </div>
+        </section>
+
+        <p *ngIf="formError" class="inline-flex gap-1 text-red-600">
+          <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+          {{ formError }}
+        </p>
+        <p *ngIf="formSuccess" class="inline-flex gap-1">
+          <check-circle-solid-icon></check-circle-solid-icon>
+          {{ formSuccess }}
+        </p>
+        <button
+          #submit
+          [disabled]="
+            (updateRepairForm.invalid && updateRepairForm.dirty) ||
+            submitText !== 'Update'
+          "
+          type="submit"
+          class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+          {{ submitText }}
+        </button>
+      </form>
+
+      <!-- Update appointment -->
+      <app-appointment-form
+        *ngSwitchCase="'update-appointment'"
+        [type]="'update'"
+        [routeData]="routeData"></app-appointment-form>
+
+      <!-- Create appointment -->
+      <app-appointment-form
+        *ngSwitchCase="'create-appointment'"
+        [type]="'create'"
+        [routeData]="routeData"></app-appointment-form>
+
+      <!-- create loan -->
+      <app-loan-and-repair-form
+        *ngSwitchCase="'create-loan'"
+        [type]="'loan'"
+        [routeData]="routeData"></app-loan-and-repair-form>
+
+      <!-- create repair -->
+      <app-loan-and-repair-form
+        *ngSwitchCase="'create-repair'"
+        [type]="'repair'"
+        [routeData]="routeData"></app-loan-and-repair-form>
+
+      <!-- create endoscope sampling -->
+      <app-create-sample-form
+        *ngSwitchCase="'create-scope'"
+        [type]="'scope'"
+        [routeData]="routeData"></app-create-sample-form>
+
+      <!-- create washer sampling -->
+      <app-create-sample-form
+        *ngSwitchCase="'create-washer'"
+        [type]="'washer'"
+        [routeData]="routeData"></app-create-sample-form>
+
+      <div *ngSwitchDefault></div>
+    </div>
+  </div>
+</div>
+
+<!-- confirmation modal -->
+<app-modal
+  [hideModal]="hideModal"
+  [message]="modalMessage"
+  [type]="modalType"
+  [title]="modalTitle"
+  [confirmText]="modalConfirmText"
+  (confirm)="onSubmitConfirm()"
+  (cancel)="onSubmitCancel()">
+</app-modal>

@@ -1,0 +1,125 @@
+<form
+  [formGroup]="formGroup"
+  class="flex flex-col gap-3"
+  (ngSubmit)="onSubmit()">
+  <h2 class="text-base font-medium">{{ title }}</h2>
+
+  <div>
+    <label for="incharge" class="mb-2 block text-sm font-medium">
+      Nurse in charge*
+    </label>
+    <select
+      id="incharge"
+      formControlName="incharge"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option *ngFor="let u of users" [value]="u.id">
+        {{ u.firstname }} {{ u.lastname }}
+      </option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls.incharge.hasError('required') &&
+        formGroup.controls.incharge.dirty
+      "
+      class="text-red-600">
+      Nurse in charge is required
+    </p>
+  </div>
+
+  <div>
+    <label for="date" class="mb-2 block text-sm font-medium"> Start at* </label>
+    <input
+      id="date"
+      type="date"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+      formControlName="date" />
+    <p
+      *ngIf="
+        formGroup.controls.date.hasError('required') &&
+        formGroup.controls.date.dirty
+      "
+      class="text-red-600">
+      Start at is required
+    </p>
+  </div>
+
+  <div>
+    <label for="expectedDate" class="mb-2 block text-sm font-medium">
+      Expected return date*
+    </label>
+    <input
+      id="expectedDate"
+      type="date"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+      formControlName="expectedDate" />
+    <p
+      *ngIf="
+        formGroup.controls.expectedDate.hasError('required') &&
+        formGroup.controls.expectedDate.dirty
+      "
+      class="text-red-600">
+      Expected return date is required
+    </p>
+  </div>
+
+  <div>
+    <app-endoscope-label></app-endoscope-label>
+    <select
+      id="serialNo"
+      formControlName="serialNo"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700">
+      <option *ngFor="let e of endoscopes" [value]="e.serialNo">
+        {{ e.label }}
+      </option>
+    </select>
+    <p
+      *ngIf="
+        formGroup.controls.serialNo.hasError('required') &&
+        formGroup.controls.serialNo.dirty
+      "
+      class="text-red-600">
+      Endoscope is required
+    </p>
+  </div>
+
+  <div>
+    <label for="remarks" class="mb-2 block text-sm font-medium">
+      Remarks
+    </label>
+    <input
+      id="remarks"
+      type="text"
+      autocomplete="on"
+      formControlName="remarks"
+      class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700" />
+  </div>
+
+  <p *ngIf="formError" class="inline-flex gap-1 text-red-600">
+    <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+    {{ formError }}
+  </p>
+  <p *ngIf="formSuccess" class="inline-flex gap-1">
+    <check-circle-solid-icon></check-circle-solid-icon>
+    {{ formSuccess }}
+  </p>
+  <button
+    #submit
+    [disabled]="
+      (formGroup.invalid && formGroup.dirty) || submitText !== 'Create'
+    "
+    type="submit"
+    class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+    {{ submitText }}
+  </button>
+</form>
+
+<!-- confirmation modal -->
+<app-modal
+  [hideModal]="hideModal"
+  [message]="modalMessage"
+  [type]="modalType"
+  [title]="modalTitle"
+  [confirmText]="modalConfirmText"
+  (confirm)="onSubmitConfirm()"
+  (cancel)="onSubmitCancel()">
+</app-modal>

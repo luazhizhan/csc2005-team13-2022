@@ -1,0 +1,70 @@
+<div
+  class="mx-auto mt-16 flex h-full w-72 flex-col gap-3 rounded-md p-5 shadow-3xl md:w-96">
+  <!-- login header -->
+  <div class="flex flex-row content-center">
+    <h2 class="grow self-center pl-14 text-center text-xl font-medium">
+      Log In
+    </h2>
+
+    <a
+      routerLink="/signup"
+      class="inline-flex items-center gap-1 self-center text-red-700 hover:underline">
+      Sign Up
+      <arrow-right-outline-icon [size]="18"></arrow-right-outline-icon>
+    </a>
+  </div>
+
+  <!-- login form -->
+  <form [formGroup]="form" class="flex flex-col gap-3" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="email" class="mb-2 block text-sm font-medium"> Email </label>
+      <input
+        id="email"
+        type="email"
+        autocomplete="on"
+        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+        formControlName="email" />
+      <p
+        *ngIf="
+          form.controls.email.hasError('required') && form.controls.email.dirty
+        "
+        class="text-red-600">
+        Email is required
+      </p>
+    </div>
+
+    <div>
+      <label for="password" class="0 mb-2 block text-sm font-medium">
+        Password
+      </label>
+      <input
+        id="password"
+        type="password"
+        autocomplete="on"
+        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm focus:border-red-700 focus:ring-red-700"
+        formControlName="password" />
+    </div>
+
+    <div class="flex items-start">
+      <div class="flex h-5 items-center">
+        <input
+          id="remember"
+          type="checkbox"
+          formControlName="remember"
+          class="focus:ring-3 h-4 w-4 rounded border border-gray-300 bg-gray-50 focus:ring-red-300" />
+      </div>
+      <label for="remember" class="ml-2 text-sm font-medium">Remember me</label>
+    </div>
+    <p *ngIf="error" class="inline-flex gap-1 text-red-600">
+      <exclamation-circle-solid-icon></exclamation-circle-solid-icon>
+      {{ error }}
+    </p>
+    <button
+      #submit
+      [disabled]="(form.invalid && form.dirty) || loginText !== 'Login'"
+      type="submit"
+      class="w-full rounded-md bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 disabled:grayscale">
+      {{ loginText }}
+    </button>
+  </form>
+</div>

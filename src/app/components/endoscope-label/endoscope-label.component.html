@@ -1,0 +1,14 @@
+<label
+  for="endoscopeSerialNo"
+  class="mb-2 flex items-center text-sm font-medium">
+  <span>Select endoscope*</span>
+  <button
+    type="button"
+    (click)="show = !show"
+    class="relative top-[0.1rem] rounded-full px-[0.3rem] py-[0.2rem] hover:bg-gray-200">
+    <fa-icon [icon]="faCircleQuestion"></fa-icon>
+  </button>
+</label>
+<div *ngIf="show === true" class="mb-4">
+  <img src="./assets/endoscope.png" alt="Endoscope" height="350" width="500" />
+</div>
